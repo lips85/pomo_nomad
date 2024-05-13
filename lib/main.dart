@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pomo_nomad/screens/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,9 +23,7 @@ class MyApp extends StatelessWidget {
         ),
         cardColor: const Color(0xFFF4EDDB),
       ),
-      home: const Scaffold(
-        body: Center(),
-      ),
+      home: const HomeScreen(),
     );
   }
 }
