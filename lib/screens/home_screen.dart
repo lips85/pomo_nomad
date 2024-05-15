@@ -50,11 +50,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void onResetPressed() {
-    timer.cancel();
     setState(() {
       totalSeconds = twentyFiveMinutes;
-      isRunning = !isRunning;
+      isRunning = false;
     });
+    timer.cancel();
   }
 
   String format(int seconds) {
@@ -105,10 +105,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: IconButton(
                   iconSize: 40,
                   color: Theme.of(context).cardColor,
-                  onPressed: isRunning ? onPausePressed : onStartPressed,
-                  icon: Icon(isRunning
-                      ? Icons.pause_circle_filled_outlined
-                      : Icons.play_circle_outline),
+                  onPressed: onResetPressed,
+                  icon: const Icon(Icons.restart_alt_outlined),
                 )),
           ),
           Flexible(
