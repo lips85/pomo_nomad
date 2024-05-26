@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:pomo_nomad/constants/gaps.dart';
+import 'package:pomo_nomad/constants/sizes.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -65,89 +67,115 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
-      body: Column(
-        children: [
-          Flexible(
-            flex: 1,
-            child: Container(
-              alignment: Alignment.bottomCenter,
-              child: Text(
-                format(totalSeconds),
-                style: TextStyle(
-                  color: Theme.of(context).cardColor,
-                  fontSize: 89,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
+      body: SafeArea(
+        top: true,
+        bottom: true,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: Sizes.size20,
+            vertical: Sizes.size40,
           ),
-          const Flexible(
-            flex: 1,
-            child: Center(),
-          ),
-          Flexible(
-            flex: 1,
-            child: Center(
-                child: IconButton(
-              iconSize: 120,
-              color: Theme.of(context).cardColor,
-              onPressed: isRunning ? onPausePressed : onStartPressed,
-              icon: Icon(isRunning
-                  ? Icons.pause_circle_filled_outlined
-                  : Icons.play_circle_outline),
-            )),
-          ),
-          Flexible(
-            flex: 1,
-            child: Container(
-                alignment: Alignment.topCenter,
-                child: IconButton(
-                  iconSize: 40,
-                  color: Theme.of(context).cardColor,
-                  onPressed: onResetPressed,
-                  icon: const Icon(Icons.restart_alt_outlined),
-                )),
-          ),
-          Flexible(
-            flex: 1,
-            child: Row(
+          child: SafeArea(
+            child: Column(
               children: [
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).cardColor,
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "pomodoros",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color:
-                                Theme.of(context).textTheme.displayLarge!.color,
+                Gaps.v96,
+                Text(
+                  format(totalSeconds),
+                  style: TextStyle(
+                    color: Colors.amber[50],
+                    fontSize: Sizes.size80 + Sizes.size20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Gaps.v96,
+                IconButton(
+                  iconSize: Sizes.size80 + Sizes.size20,
+                  color: Colors.amber[50],
+                  onPressed: isRunning ? onPausePressed : onStartPressed,
+                  icon: Icon(isRunning
+                      ? Icons.pause_circle_filled_outlined
+                      : Icons.play_circle_outline),
+                ),
+                Gaps.v10,
+                AnimatedOpacity(
+                  duration: const Duration(milliseconds: 500),
+                  opacity: isRunning ? 1.0 : 0.0,
+                  child: IconButton(
+                    iconSize: 40,
+                    color: Colors.amber[50],
+                    onPressed: onResetPressed,
+                    icon: const Icon(Icons.restart_alt_outlined),
+                  ),
+                ),
+                Gaps.v96,
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Sizes.size20,
+                    vertical: Sizes.size20,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.amber[50],
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "$totalPomodoros / 4",
+                            style: const TextStyle(
+                              fontSize: Sizes.size32,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF232B55),
+                            ),
                           ),
+                          const Text(
+                            "Round",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Color(0xFF232B55),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Text(
+                        "/",
+                        style: TextStyle(
+                          fontSize: 58,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF232B55),
                         ),
-                        Text(
-                          "$totalPomodoros",
-                          style: TextStyle(
-                            fontSize: 58,
-                            fontWeight: FontWeight.w600,
-                            color:
-                                Theme.of(context).textTheme.displayLarge!.color,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "$totalPomodoros / 12",
+                            style: const TextStyle(
+                              fontSize: Sizes.size32,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF232B55),
+                            ),
                           ),
-                        )
-                      ],
-                    ),
+                          const Text(
+                            "Goal",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Color(0xFF232B55),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
