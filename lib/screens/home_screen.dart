@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:pomo_nomad/constants/gaps.dart';
 import 'package:pomo_nomad/constants/sizes.dart';
 import 'package:pomo_nomad/widgets/score_board.dart';
+import 'package:pomo_nomad/widgets/time_button.dart';
 
-final select_time = [5, 10, 15, 20, 25, 30];
+final selectTime = [5, 10, 15, 20, 25, 30];
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -92,32 +93,17 @@ class _HomeScreenState extends State<HomeScreen> {
               Gaps.v20,
               SizedBox(
                 height: Sizes.size60, // 높이 설정
+
                 child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Sizes.size20,
+                  ),
+                  clipBehavior: Clip.hardEdge,
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    children: select_time.map((time) {
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: Sizes.size20,
-                          vertical: Sizes.size10,
-                        ),
-                        margin: const EdgeInsets.only(right: 20), // 요소 사이 간격 설정
-                        decoration: BoxDecoration(
-                          color: Colors.blueGrey,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Center(
-                          child: Text(
-                            time.toString(),
-                            style: TextStyle(
-                              color: Colors.amber[50],
-                              fontSize: Sizes.size20,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
+                    children: [
+                      for (var time in selectTime) SelectedButton(time: time),
+                    ],
                   ),
                 ),
               ),
@@ -149,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 decoration: BoxDecoration(
                   color: Colors.amber[50],
-                  borderRadius: BorderRadius.circular(50),
+                  borderRadius: BorderRadius.circular(30),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
