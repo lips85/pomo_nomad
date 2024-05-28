@@ -6,7 +6,7 @@ import 'package:pomo_nomad/constants/sizes.dart';
 import 'package:pomo_nomad/widgets/score_board.dart';
 import 'package:pomo_nomad/widgets/time_button.dart';
 
-final selectTime = [5, 10, 15, 20, 25, 30];
+final selectTime = ["05:00", "10:00", "15:00", "20:00", "25:00", "30:00"];
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

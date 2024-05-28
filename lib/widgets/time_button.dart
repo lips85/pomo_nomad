@@ -7,7 +7,7 @@ class SelectedButton extends StatefulWidget {
     required this.time,
   });
 
-  final int time;
+  final String time;
 
   @override
   State<SelectedButton> createState() => _SelectedButtonState();
@@ -27,15 +27,18 @@ class _SelectedButtonState extends State<SelectedButton> {
     return GestureDetector(
       onTap: _onTap,
       child: AnimatedContainer(
+        margin: const EdgeInsets.only(
+          right: Sizes.size16,
+        ),
         duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.symmetric(
           vertical: Sizes.size16,
-          horizontal: Sizes.size24,
+          horizontal: Sizes.size16,
         ),
         decoration: BoxDecoration(
           color: _isSelected ? Theme.of(context).primaryColor : Colors.white,
           borderRadius: BorderRadius.circular(
-            Sizes.size32,
+            Sizes.size96,
           ),
           border: Border.all(
             color: Colors.black.withOpacity(0.1),
@@ -49,7 +52,7 @@ class _SelectedButtonState extends State<SelectedButton> {
           ],
         ),
         child: Text(
-          "${widget.time}",
+          widget.time,
           style: TextStyle(
               fontWeight: FontWeight.bold,
               color: _isSelected ? Colors.white : Colors.black87),
