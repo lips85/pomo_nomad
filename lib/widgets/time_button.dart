@@ -15,8 +15,11 @@ class SelectedButton extends StatefulWidget {
 
 class _SelectedButtonState extends State<SelectedButton> {
   bool _isSelected = false;
+  late String selctedTime;
 
   void _onTap() {
+    selctedTime = widget.time;
+
     setState(() {
       _isSelected = !_isSelected;
     });

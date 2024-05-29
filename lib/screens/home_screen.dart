@@ -21,14 +21,19 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isRunning = false;
   bool isReset = false;
   late Timer timer;
-  int totalPomodoros = 0;
+  int totalRound = 0, totalGoal = 0;
+  late int userSelectedTime;
 
   void onTick(Timer timer) {
     if (totalSeconds == 0) {
       setState(() {
         totalSeconds = twentyFiveMinutes;
-        totalPomodoros = totalPomodoros + 1;
+        totalRound = totalRound + 1;
         isRunning = false;
+        if (totalRound == 4) {
+          totalRound = 0;
+          totalGoal = totalGoal + 1;
+        }
       });
       timer.cancel();
     } else {
@@ -142,20 +147,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ScoreBoard(
-                      countScore: totalPomodoros,
+                      countScore: totalRound,
                       maxScore: 4,
                       text: "Round",
                     ),
                     const Text(
-                      "/",
+                      "|",
                       style: TextStyle(
                         fontSize: 58,
-                        fontWeight: FontWeight.w600,
                         color: Color(0xFF232B55),
                       ),
                     ),
                     ScoreBoard(
-                      countScore: totalPomodoros,
+                      countScore: totalGoal,
                       text: "Goal",
                       maxScore: 12,
                     ),
