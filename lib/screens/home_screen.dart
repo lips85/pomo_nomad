@@ -76,99 +76,116 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        top: true,
-        bottom: true,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: Sizes.size20,
-            vertical: Sizes.size40,
+      backgroundColor: Colors.amber[50],
+      appBar: AppBar(
+        backgroundColor: Colors.amber[50],
+        elevation: 0,
+        title: const Text(
+          "POMOTIMER",
+          style: TextStyle(
+            fontSize: Sizes.size20,
+            color: Colors.black,
           ),
-          child: Column(
-            children: [
-              Gaps.v96,
-              Text(
-                format(totalSeconds),
-                style: TextStyle(
-                  color: Colors.amber[50],
-                  fontSize: Sizes.size80 + Sizes.size20,
-                  fontWeight: FontWeight.w600,
-                ),
+        ),
+        centerTitle: false,
+      ),
+      body: Column(
+        children: [
+          Gaps.v96,
+          Flexible(
+            flex: 2,
+            fit: FlexFit.tight,
+            child: Text(
+              format(totalSeconds),
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: Sizes.size80 + Sizes.size20,
+                fontWeight: FontWeight.w600,
               ),
-              Gaps.v20,
-              SizedBox(
-                height: Sizes.size60, // 높이 설정
-
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: Sizes.size20,
-                  ),
-                  clipBehavior: Clip.hardEdge,
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      for (var time in selectTime) SelectedButton(time: time),
-                    ],
-                  ),
-                ),
-              ),
-              Gaps.v96,
-              IconButton(
-                iconSize: Sizes.size80 + Sizes.size20,
-                color: Colors.amber[50],
-                onPressed: isRunning ? onPausePressed : onStartPressed,
-                icon: Icon(isRunning
-                    ? Icons.pause_circle_filled_outlined
-                    : Icons.play_circle_outline),
-              ),
-              Gaps.v10,
-              AnimatedOpacity(
-                duration: const Duration(milliseconds: 500),
-                opacity: isRunning ? 1.0 : 0.0,
-                child: IconButton(
-                  iconSize: 40,
-                  color: Colors.amber[50],
-                  onPressed: onResetPressed,
-                  icon: const Icon(Icons.restart_alt_outlined),
-                ),
-              ),
-              Gaps.v72,
-              Container(
+            ),
+          ),
+          Flexible(
+            flex: 1,
+            fit: FlexFit.tight,
+            child: SizedBox(
+              height: Sizes.size60, // 높이 설정
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
                   horizontal: Sizes.size20,
-                  vertical: Sizes.size20,
                 ),
-                decoration: BoxDecoration(
-                  color: Colors.amber[50],
-                  borderRadius: BorderRadius.circular(30),
-                ),
+                clipBehavior: Clip.hardEdge,
+                scrollDirection: Axis.horizontal,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    ScoreBoard(
-                      countScore: totalRound,
-                      maxScore: 4,
-                      text: "Round",
-                    ),
-                    const Text(
-                      "|",
-                      style: TextStyle(
-                        fontSize: 58,
-                        color: Color(0xFF232B55),
-                      ),
-                    ),
-                    ScoreBoard(
-                      countScore: totalGoal,
-                      text: "Goal",
-                      maxScore: 12,
-                    ),
+                    for (var time in selectTime) SelectedButton(time: time),
                   ],
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+          Flexible(
+            flex: 2,
+            fit: FlexFit.tight,
+            child: IconButton(
+              iconSize: Sizes.size80 + Sizes.size20,
+              color: Colors.black,
+              onPressed: isRunning ? onPausePressed : onStartPressed,
+              icon: Icon(isRunning
+                  ? Icons.pause_circle_filled_outlined
+                  : Icons.play_circle_outline),
+            ),
+          ),
+          Flexible(
+            flex: 1,
+            fit: FlexFit.tight,
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 500),
+              opacity: isRunning ? 1.0 : 0.0,
+              child: IconButton(
+                iconSize: 40,
+                color: Colors.black,
+                onPressed: onResetPressed,
+                icon: const Icon(Icons.restart_alt_outlined),
+              ),
+            ),
+          ),
+          Flexible(
+            flex: 2,
+            fit: FlexFit.tight,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: Sizes.size20,
+                vertical: Sizes.size20,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  ScoreBoard(
+                    countScore: totalRound,
+                    maxScore: 4,
+                    text: "Round",
+                  ),
+                  const Text(
+                    "|",
+                    style: TextStyle(
+                      fontSize: 58,
+                      color: Color(0xFF232B55),
+                    ),
+                  ),
+                  ScoreBoard(
+                    countScore: totalGoal,
+                    text: "Goal",
+                    maxScore: 12,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

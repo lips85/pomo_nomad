@@ -15,7 +15,7 @@ class HaruPomodoro extends StatelessWidget {
       title: 'Haru Pomodoro',
       theme: ThemeData(
         useMaterial3: false,
-        scaffoldBackgroundColor: const Color.fromARGB(255, 34, 82, 184),
+        scaffoldBackgroundColor: Colors.white,
       ),
       home: const HomeScreen(),
     );

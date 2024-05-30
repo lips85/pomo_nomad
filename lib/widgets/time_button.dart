@@ -23,6 +23,16 @@ class _SelectedButtonState extends State<SelectedButton> {
     setState(() {
       _isSelected = !_isSelected;
     });
+    Future.delayed(
+      const Duration(milliseconds: 400),
+      () => {
+        setState(
+          () {
+            _isSelected = !_isSelected;
+          },
+        )
+      },
+    );
   }
 
   @override
@@ -34,12 +44,8 @@ class _SelectedButtonState extends State<SelectedButton> {
           right: Sizes.size16,
         ),
         duration: const Duration(milliseconds: 300),
-        padding: const EdgeInsets.symmetric(
-          vertical: Sizes.size16,
-          horizontal: Sizes.size16,
-        ),
         decoration: BoxDecoration(
-          color: _isSelected ? Theme.of(context).primaryColor : Colors.white,
+          color: _isSelected ? Theme.of(context).primaryColor : Colors.black,
           borderRadius: BorderRadius.circular(
             Sizes.size96,
           ),
@@ -54,11 +60,16 @@ class _SelectedButtonState extends State<SelectedButton> {
             ),
           ],
         ),
-        child: Text(
-          widget.time,
-          style: TextStyle(
+        child: TextButton(
+          onPressed: () {},
+          child: Text(
+            widget.time,
+            style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: _isSelected ? Colors.white : Colors.black87),
+              color:
+                  _isSelected ? Theme.of(context).primaryColor : Colors.white,
+            ),
+          ),
         ),
       ),
     );
