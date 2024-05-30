@@ -1,12 +1,12 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pomo_nomad/constants/gaps.dart';
 import 'package:pomo_nomad/constants/sizes.dart';
 import 'package:pomo_nomad/widgets/score_board.dart';
-import 'package:pomo_nomad/widgets/time_button.dart';
+import 'package:pomo_nomad/widgets/selected_button.dart';
 
-final selectTime = [2, 15, 20, 25, 30, 35];
+final selectTime = [10, 15, 20, 25, 30, 35];
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,34 +19,46 @@ class _HomeScreenState extends State<HomeScreen> {
   static const twentyFiveMinutes = 1500;
   int totalSeconds = twentyFiveMinutes;
   bool isRunning = false;
-  bool isReset = false;
+  bool isBreakTime = false; // 새로운 상태 변수 추가
   late Timer timer;
   late int selectedTime;
   int totalRound = 0, totalGoal = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedTime = totalSeconds;
+  }
 
   void _onTick(Timer timer) {
     if (totalSeconds == 0) {
       setState(() {
         totalSeconds = selectedTime;
-        totalRound = totalRound + 1;
+        totalRound++;
         isRunning = false;
-
+        isBreakTime = true; // Break time 시작
         if (totalRound == 4) {
           totalRound = 0;
-          totalGoal = totalGoal + 1;
+          totalGoal++;
         }
       });
       timer.cancel();
+      Future.delayed(const Duration(seconds: 5), () {
+        setState(() {
+          isBreakTime = false; // Break time 종료
+        });
+      });
     } else {
       setState(() {
-        totalSeconds = totalSeconds - 1;
+        totalSeconds--;
       });
     }
   }
 
   void _onStartPressed() {
+    if (isBreakTime) return; // Break time 동안 시작 버튼 무시
     timer = Timer.periodic(
-      const Duration(seconds: 1),
+      const Duration(milliseconds: 1),
       _onTick,
     );
     setState(() {
@@ -65,6 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       totalSeconds = selectedTime;
       isRunning = false;
+      isBreakTime = false; // 리셋 시 Break time 종료
     });
     timer.cancel();
   }
@@ -72,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onTimeSelected(int seconds) {
     setState(() {
       totalSeconds = seconds;
-      selectedTime = totalSeconds;
+      selectedTime = seconds;
     });
   }
 
@@ -98,6 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: false,
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Gaps.v96,
           Flexible(
@@ -106,7 +120,6 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Text(
               format(totalSeconds),
               style: const TextStyle(
-                color: Colors.black,
                 fontSize: Sizes.size80 + Sizes.size20,
                 fontWeight: FontWeight.w600,
               ),
@@ -116,12 +129,9 @@ class _HomeScreenState extends State<HomeScreen> {
             flex: 1,
             fit: FlexFit.tight,
             child: SizedBox(
-              height: Sizes.size60, // 높이 설정
+              height: Sizes.size60,
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: Sizes.size20,
-                ),
-                clipBehavior: Clip.hardEdge,
+                padding: const EdgeInsets.symmetric(horizontal: Sizes.size20),
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
@@ -138,30 +148,60 @@ class _HomeScreenState extends State<HomeScreen> {
           Flexible(
             flex: 2,
             fit: FlexFit.tight,
-            child: IconButton(
-              iconSize: Sizes.size80 + Sizes.size20,
-              color: Colors.black,
-              onPressed: isRunning ? _onPausePressed : _onStartPressed,
-              icon: Icon(isRunning
-                  ? Icons.pause_circle_filled_outlined
-                  : Icons.play_circle_outline),
-            ),
+            child: isBreakTime
+                ? IconButton(
+                    iconSize: Sizes.size80,
+                    onPressed: () {},
+                    icon: const FaIcon(
+                      FontAwesomeIcons.trophy,
+                    ),
+                  )
+                : IconButton(
+                    iconSize: Sizes.size80 + Sizes.size20,
+                    onPressed: isRunning ? _onPausePressed : _onStartPressed,
+                    icon: Icon(
+                      isRunning
+                          ? Icons.pause_circle_filled_outlined
+                          : Icons.play_circle_outline,
+                    ),
+                  ),
           ),
           Flexible(
             flex: 1,
             fit: FlexFit.tight,
-            child: AnimatedOpacity(
-              duration: const Duration(milliseconds: 500),
-              opacity: isRunning ? 1.0 : 0.0,
-              child: isRunning
-                  ? IconButton(
-                      iconSize: 40,
-                      color: Colors.black,
-                      onPressed: _onResetPressed,
-                      icon: const Icon(Icons.restart_alt_outlined),
-                    )
-                  : const SizedBox(),
-            ),
+            child: isBreakTime
+                ? const Column(
+                    children: [
+                      Text(
+                        "Break Time!",
+                        style: TextStyle(
+                          fontSize: Sizes.size28,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Gaps.v16,
+                      Text(
+                        "Proud of You!!",
+                        style: TextStyle(
+                          fontSize: Sizes.size28,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  )
+                : AnimatedOpacity(
+                    duration: const Duration(milliseconds: 700),
+                    opacity: isRunning ? 1.0 : 0.0,
+                    child: isRunning
+                        ? IconButton(
+                            color: const Color(0xFF232B55),
+                            iconSize: 40,
+                            onPressed: _onResetPressed,
+                            icon:
+                                const FaIcon(FontAwesomeIcons.arrowRotateRight),
+                          )
+                        : const SizedBox(),
+                  ),
           ),
           Flexible(
             flex: 2,
@@ -200,126 +240,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class ScoreBoard extends StatelessWidget {
-  const ScoreBoard({
-    super.key,
-    required this.countScore,
-    required this.maxScore,
-    required this.text,
-  });
-
-  final int countScore, maxScore;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          "$countScore / $maxScore",
-          style: const TextStyle(
-            fontSize: Sizes.size32,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF232B55),
-          ),
-        ),
-        Text(
-          text,
-          style: const TextStyle(
-            fontSize: 18,
-            color: Color(0xFF232B55),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class SelectedButton extends StatefulWidget {
-  const SelectedButton({
-    super.key,
-    required this.time,
-    required this.onSelected,
-  });
-
-  final int time;
-  final ValueChanged<int> onSelected;
-
-  @override
-  State<SelectedButton> createState() => _SelectedButtonState();
-}
-
-class _SelectedButtonState extends State<SelectedButton> {
-  bool _isSelected = false;
-
-  void _onTap() {
-    if (widget.time == 2) {
-      widget.onSelected(widget.time);
-    } else {
-      widget.onSelected(widget.time * 60);
-    }
-
-    setState(() {
-      _isSelected = !_isSelected;
-    });
-    Future.delayed(
-      const Duration(milliseconds: 400),
-      () => {
-        setState(
-          () {
-            _isSelected = !_isSelected;
-          },
-        )
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: _onTap,
-      child: AnimatedContainer(
-        padding: const EdgeInsets.all(20),
-        margin: const EdgeInsets.only(
-          right: Sizes.size28,
-        ),
-        duration: const Duration(milliseconds: 300),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: _isSelected ? Colors.amber[50] : Colors.black,
-          border: Border.all(
-            color: Colors.black.withOpacity(0.1),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 5,
-              spreadRadius: 5,
-            ),
-          ],
-        ),
-        child: (widget.time == 2)
-            ? Text(
-                "EX",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                  color: _isSelected ? Colors.red : Colors.white,
-                ),
-              )
-            : Text(
-                "${widget.time}",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: _isSelected ? const Color(0xFF232B55) : Colors.white,
-                ),
-              ),
       ),
     );
   }
