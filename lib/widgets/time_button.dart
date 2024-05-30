@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../constants/sizes.dart';
 
@@ -45,7 +46,7 @@ class _SelectedButtonState extends State<SelectedButton> {
         ),
         duration: const Duration(milliseconds: 300),
         decoration: BoxDecoration(
-          color: _isSelected ? Theme.of(context).primaryColor : Colors.black,
+          color: _isSelected ? Colors.amber[50] : Colors.black,
           borderRadius: BorderRadius.circular(
             Sizes.size96,
           ),
@@ -60,8 +61,7 @@ class _SelectedButtonState extends State<SelectedButton> {
             ),
           ],
         ),
-        child: TextButton(
-          onPressed: () {},
+        child: CupertinoButton(
           child: Text(
             widget.time,
             style: TextStyle(
@@ -70,6 +70,7 @@ class _SelectedButtonState extends State<SelectedButton> {
                   _isSelected ? Theme.of(context).primaryColor : Colors.white,
             ),
           ),
+          onPressed: () {},
         ),
       ),
     );

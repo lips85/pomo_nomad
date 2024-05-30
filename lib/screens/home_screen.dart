@@ -24,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int totalRound = 0, totalGoal = 0;
   late int userSelectedTime;
 
-  void onTick(Timer timer) {
+  void _onTick(Timer timer) {
     if (totalSeconds == 0) {
       setState(() {
         totalSeconds = twentyFiveMinutes;
@@ -43,24 +43,24 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void onStartPressed() {
+  void _onStartPressed() {
     timer = Timer.periodic(
       const Duration(seconds: 1),
-      onTick,
+      _onTick,
     );
     setState(() {
       isRunning = true;
     });
   }
 
-  void onPausePressed() {
+  void _onPausePressed() {
     timer.cancel();
     setState(() {
       isRunning = false;
     });
   }
 
-  void onResetPressed() {
+  void _onResetPressed() {
     setState(() {
       totalSeconds = twentyFiveMinutes;
       isRunning = false;
@@ -117,7 +117,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    for (var time in selectTime) SelectedButton(time: time),
+                    for (var time in selectTime)
+                      SelectedButton(
+                        time: time,
+                      ),
                   ],
                 ),
               ),
@@ -129,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: IconButton(
               iconSize: Sizes.size80 + Sizes.size20,
               color: Colors.black,
-              onPressed: isRunning ? onPausePressed : onStartPressed,
+              onPressed: isRunning ? _onPausePressed : _onStartPressed,
               icon: Icon(isRunning
                   ? Icons.pause_circle_filled_outlined
                   : Icons.play_circle_outline),
@@ -141,12 +144,14 @@ class _HomeScreenState extends State<HomeScreen> {
             child: AnimatedOpacity(
               duration: const Duration(milliseconds: 500),
               opacity: isRunning ? 1.0 : 0.0,
-              child: IconButton(
-                iconSize: 40,
-                color: Colors.black,
-                onPressed: onResetPressed,
-                icon: const Icon(Icons.restart_alt_outlined),
-              ),
+              child: isRunning
+                  ? IconButton(
+                      iconSize: 40,
+                      color: Colors.black,
+                      onPressed: _onResetPressed,
+                      icon: const Icon(Icons.restart_alt_outlined),
+                    )
+                  : const SizedBox(),
             ),
           ),
           Flexible(
@@ -172,7 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const Text(
                     "|",
                     style: TextStyle(
-                      fontSize: 58,
+                      fontSize: Sizes.size64,
                       color: Color(0xFF232B55),
                     ),
                   ),
