@@ -6,7 +6,7 @@ import 'package:pomo_nomad/constants/sizes.dart';
 import 'package:pomo_nomad/widgets/score_board.dart';
 import 'package:pomo_nomad/widgets/time_button.dart';
 
-final selectTime = ["05:00", "10:00", "15:00", "20:00", "25:00", "30:00"];
+final selectTime = [2, 15, 20, 25, 30, 35];
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,15 +21,16 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isRunning = false;
   bool isReset = false;
   late Timer timer;
+  late int selectedTime;
   int totalRound = 0, totalGoal = 0;
-  late int userSelectedTime;
 
   void _onTick(Timer timer) {
     if (totalSeconds == 0) {
       setState(() {
-        totalSeconds = twentyFiveMinutes;
+        totalSeconds = selectedTime;
         totalRound = totalRound + 1;
         isRunning = false;
+
         if (totalRound == 4) {
           totalRound = 0;
           totalGoal = totalGoal + 1;
@@ -62,10 +63,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _onResetPressed() {
     setState(() {
-      totalSeconds = twentyFiveMinutes;
+      totalSeconds = selectedTime;
       isRunning = false;
     });
     timer.cancel();
+  }
+
+  void _onTimeSelected(int seconds) {
+    setState(() {
+      totalSeconds = seconds;
+      selectedTime = totalSeconds;
+    });
   }
 
   String format(int seconds) {
@@ -120,6 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     for (var time in selectTime)
                       SelectedButton(
                         time: time,
+                        onSelected: _onTimeSelected,
                       ),
                   ],
                 ),
@@ -191,6 +200,126 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ScoreBoard extends StatelessWidget {
+  const ScoreBoard({
+    super.key,
+    required this.countScore,
+    required this.maxScore,
+    required this.text,
+  });
+
+  final int countScore, maxScore;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "$countScore / $maxScore",
+          style: const TextStyle(
+            fontSize: Sizes.size32,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF232B55),
+          ),
+        ),
+        Text(
+          text,
+          style: const TextStyle(
+            fontSize: 18,
+            color: Color(0xFF232B55),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class SelectedButton extends StatefulWidget {
+  const SelectedButton({
+    super.key,
+    required this.time,
+    required this.onSelected,
+  });
+
+  final int time;
+  final ValueChanged<int> onSelected;
+
+  @override
+  State<SelectedButton> createState() => _SelectedButtonState();
+}
+
+class _SelectedButtonState extends State<SelectedButton> {
+  bool _isSelected = false;
+
+  void _onTap() {
+    if (widget.time == 2) {
+      widget.onSelected(widget.time);
+    } else {
+      widget.onSelected(widget.time * 60);
+    }
+
+    setState(() {
+      _isSelected = !_isSelected;
+    });
+    Future.delayed(
+      const Duration(milliseconds: 400),
+      () => {
+        setState(
+          () {
+            _isSelected = !_isSelected;
+          },
+        )
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: _onTap,
+      child: AnimatedContainer(
+        padding: const EdgeInsets.all(20),
+        margin: const EdgeInsets.only(
+          right: Sizes.size28,
+        ),
+        duration: const Duration(milliseconds: 300),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: _isSelected ? Colors.amber[50] : Colors.black,
+          border: Border.all(
+            color: Colors.black.withOpacity(0.1),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 5,
+              spreadRadius: 5,
+            ),
+          ],
+        ),
+        child: (widget.time == 2)
+            ? Text(
+                "EX",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: _isSelected ? Colors.red : Colors.white,
+                ),
+              )
+            : Text(
+                "${widget.time}",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: _isSelected ? const Color(0xFF232B55) : Colors.white,
+                ),
+              ),
       ),
     );
   }
